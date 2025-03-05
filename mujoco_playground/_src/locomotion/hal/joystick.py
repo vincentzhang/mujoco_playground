@@ -25,14 +25,14 @@ import numpy as np
 
 from mujoco_playground._src import collision
 from mujoco_playground._src import mjx_env
-from mujoco_playground._src.locomotion.go1 import base as go1_base
-from mujoco_playground._src.locomotion.go1 import go1_constants as consts
+from mujoco_playground._src.locomotion.hal import base as hal_base
+from mujoco_playground._src.locomotion.hal import hal_constants as consts
 
 
 def default_config() -> config_dict.ConfigDict:
   return config_dict.create(
       ctrl_dt=0.02,
-      sim_dt=0.004,
+      sim_dt=0.01,
       episode_length=1000,
       Kp=35.0,
       Kd=0.5,
@@ -93,7 +93,7 @@ def default_config() -> config_dict.ConfigDict:
   )
 
 
-class Joystick(go1_base.Go1Env):
+class Joystick(hal_base.HALEnv):
   """Track a joystick command."""
 
   def __init__(
@@ -111,33 +111,32 @@ class Joystick(go1_base.Go1Env):
 
   def _post_init(self) -> None:
     self._init_q = jp.array(self._mj_model.keyframe("home").qpos)
-    self._default_pose = jp.array(self._mj_model.keyframe("home").qpos[7:])
+    self._default_pose = jp.array(self._mj_model.keyframe("home").ctrl)
 
-    # Note: First joint is freejoint.
-    self._lowers, self._uppers = self.mj_model.jnt_range[1:].T
+    self._lowers, self._uppers = self.mj_model.jnt_range.T
     self._soft_lowers = self._lowers * self._config.soft_joint_pos_limit_factor
     self._soft_uppers = self._uppers * self._config.soft_joint_pos_limit_factor
 
     self._torso_body_id = self._mj_model.body(consts.ROOT_BODY).id
     self._torso_mass = self._mj_model.body_subtreemass[self._torso_body_id]
 
-    self._feet_site_id = np.array(
-        [self._mj_model.site(name).id for name in consts.FEET_SITES]
-    )
+    # self._feet_site_id = np.array(
+    #     [self._mj_model.site(name).id for name in consts.FEET_SITES]
+    # )
     self._floor_geom_id = self._mj_model.geom("floor").id
-    self._feet_geom_id = np.array(
-        [self._mj_model.geom(name).id for name in consts.FEET_GEOMS]
-    )
+    # self._feet_geom_id = np.array(
+    #     [self._mj_model.geom(name).id for name in consts.FEET_GEOMS]
+    # )
 
-    foot_linvel_sensor_adr = []
-    for site in consts.FEET_SITES:
-      sensor_id = self._mj_model.sensor(f"{site}_global_linvel").id
-      sensor_adr = self._mj_model.sensor_adr[sensor_id]
-      sensor_dim = self._mj_model.sensor_dim[sensor_id]
-      foot_linvel_sensor_adr.append(
-          list(range(sensor_adr, sensor_adr + sensor_dim))
-      )
-    self._foot_linvel_sensor_adr = jp.array(foot_linvel_sensor_adr)
+    # foot_linvel_sensor_adr = []
+    # for site in consts.FEET_SITES:
+    #   sensor_id = self._mj_model.sensor(f"{site}_global_linvel").id
+    #   sensor_adr = self._mj_model.sensor_adr[sensor_id]
+    #   sensor_dim = self._mj_model.sensor_dim[sensor_id]
+    #   foot_linvel_sensor_adr.append(
+    #       list(range(sensor_adr, sensor_adr + sensor_dim))
+    #   )
+    # self._foot_linvel_sensor_adr = jp.array(foot_linvel_sensor_adr)
 
     self._cmd_a = jp.array(self._config.command_config.a)
     self._cmd_b = jp.array(self._config.command_config.b)
@@ -162,7 +161,7 @@ class Joystick(go1_base.Go1Env):
         jax.random.uniform(key, (6,), minval=-0.5, maxval=0.5)
     )
 
-    data = mjx_env.init(self.mjx_model, qpos=qpos, qvel=qvel, ctrl=qpos[7:])
+    data = mjx_env.init(self.mjx_model, qpos=qpos, qvel=qvel, ctrl=ctrl)
 
     rng, key1, key2, key3 = jax.random.split(rng, 4)
     time_until_next_pert = jax.random.uniform(
