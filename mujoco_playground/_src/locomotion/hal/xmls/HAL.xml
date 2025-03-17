@@ -33,12 +33,10 @@
     <compiler angle="radian" coordinate="local" inertiafromgeom="true" settotalmass="5"/>
 
     <default>
-        <joint armature=".1" damping=".01" limited="true" solimplimit="0 .8 .03" solreflimit=".02 1" stiffness="8"/>
-        <geom conaffinity="0" condim="3" contype="1" friction=".4 .1 .1" solimp="0.0 0.8 0.01" solref="0.02 1"/>
-        <motor ctrllimited="true" ctrlrange="-1 1"/>
+        <joint armature=".005" damping=".5"/>
+        <geom conaffinity="0" condim="3" contype="1" friction=".4 .1 .1"/>
     </default>
 
-    <size nstack="300000" nuser_geom="1"/>
     <option gravity="0 0 -9.81" timestep="0.01">
         <flag eulerdamp="disable"/>
     </option>
@@ -109,11 +107,11 @@
     </worldbody>
 
     <actuator>
-        <motor gear="20" joint="spine_joint" name="spine"/> <!-- Reduced from 100 -->
-        <motor gear="25" joint="bthigh_joint" name="bthigh"/> <!-- Reduced from 120 -->
-        <motor gear="30" joint="bshin_joint" name="bshin"/> <!-- Reduced from 90 -->
-        <motor gear="25" joint="fthigh_joint" name="fthigh"/> <!-- Kept the same for demonstration, adjust as needed -->
-        <motor gear="30" joint="fshin_joint" name="fshin"/> <!-- Reduced from 60 -->
+        <position joint="spine_joint" name="spine"/>
+        <position joint="bthigh_joint" name="bthigh"/>
+        <position joint="bshin_joint" name="bshin"/>
+        <position joint="fthigh_joint" name="fthigh"/>
+        <position joint="fshin_joint" name="fshin"/>
     </actuator>
 
   <keyframe>
