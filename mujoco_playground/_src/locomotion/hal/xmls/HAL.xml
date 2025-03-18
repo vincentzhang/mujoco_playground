@@ -75,7 +75,7 @@
         <light name="spotlight" mode="targetbodycom" target="torso" diffuse=".8 .8 .8" specular="0.3 0.3 0.3" pos="0 -6 4" cutoff="30"/>
         <geom name="floor" conaffinity="0" contype="1" condim="3" material="grid" pos="0 0 0" size="10 10 10" type="plane"/>
 
-        <body name="torso" pos="0 0 .7">
+        <body name="torso" pos="0 0 .38">
             <camera name="track" mode="trackcom" pos="0 -2 0.1" xyaxes="1 0 0 0 0 1"/>
             <geom quat="0 0 0.7071068 0.7071068" type="cylinder" name="front_torso_center_geom" size="0.05 0.025" pos="0 0 0"  rgba="0.8 0.5 0.2 1"/>
             <freejoint/>
@@ -147,7 +147,7 @@
     </sensor>
 
   <keyframe>
-    <key name="home" qpos="0 -0.42 0 1 0 0 0 0 0.51 -1.37 0.51 -1.37" ctrl="0 0 0 0 0"/>  <!-- resets the model to the home position -->
+    <key name="home" qpos="0 0 0.38 1 0 0 0 0 0.51 -1.37 0.51 -1.37" ctrl="0 0 0 0 0"/>  <!-- resets the model to the home position -->
   </keyframe>
 
 </mujoco>
