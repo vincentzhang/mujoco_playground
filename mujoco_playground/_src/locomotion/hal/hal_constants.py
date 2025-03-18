@@ -19,25 +19,30 @@ from etils import epath
 from mujoco_playground._src import mjx_env
 
 ROOT_PATH = mjx_env.ROOT_PATH / "locomotion" / "hal"
-FULL_FLAT_TERRAIN_XML = ROOT_PATH / "xmls" / "HAL.xml"
+FEET_ONLY_FLAT_TERRAIN_XML = ROOT_PATH / "xmls" / "HAL.xml"
 
 
 def task_to_xml(task_name: str) -> epath.Path:
   return {
-      "flat_terrain": FULL_FLAT_TERRAIN_XML,
+      "flat_terrain": FEET_ONLY_FLAT_TERRAIN_XML,
   }[task_name]
 
 
 FEET_SITES = [
-    "fshin",
-    "bshin",
+    "ffoot",
+    "bfoot",
 ]
 
 FEET_GEOMS = [
-    "fshin",
-    "bshin",
+    "ffoot",
+    "bfoot",
 ]
 
 ROOT_BODY = "torso"
 
-
+UPVECTOR_SENSOR = "upvector"
+GLOBAL_LINVEL_SENSOR = "global_linvel"
+GLOBAL_ANGVEL_SENSOR = "global_angvel"
+LOCAL_LINVEL_SENSOR = "local_linvel"
+ACCELEROMETER_SENSOR = "accelerometer"
+GYRO_SENSOR = "gyro"
