@@ -51,7 +51,7 @@
         </default>
     </default>
 
-    <option gravity="0 0 -9.81" timestep="0.01">
+    <option gravity="0 0 -9.81" timestep="0.004">
         <flag eulerdamp="disable"/>
     </option>
     
@@ -78,8 +78,8 @@
         <body name="torso" pos="0 0 .7">
             <camera name="track" mode="trackcom" pos="0 -2 0.1" xyaxes="1 0 0 0 0 1"/>
             <geom quat="0 0 0.7071068 0.7071068" type="cylinder" name="front_torso_center_geom" size="0.05 0.025" pos="0 0 0"  rgba="0.8 0.5 0.2 1"/>
-            <site name="front_torso_center_site" pos="0 0 0" group="5"/>
             <freejoint/>
+            <site name="imu" pos="0 0 0" group="5"/>
             <body name="front_torso" pos="0 0 0">
                 <joint name="spine_joint" damping="0.1" type="hinge" axis="0 1 0" pos="0 0 0" range="-2 2"/>
                 <geom fromto="0 0 0 .195586 0 0" rgba="0.141 0.141 0.141 1" name="front_torso_geom" size="0.01" type="capsule"/>
@@ -94,7 +94,7 @@
                         <joint axis="0 1 0" damping="0.1" name="fshin_joint" pos="0 0 0" range="-2.8 2.8" type="hinge"/>
                         <geom quat="0 0 0.7071068 0.7071068" name="fshin_geom" pos="0 0 0.175026" rgba="0.51 0.51 0.51 1" type="mesh" mesh="shin_mesh" friction="2.5 .1 .1"/>
                         <geom name="ffoot" class="foot" rgba="0.8 0.5 0.2 1"/>  <!-- set front foot to yellow to identify front vs back -->
-                        <site name="ffoot" pos="0 0 -0.15" group="5"/>
+                        <site name="ffoot" pos="0 -0.005 -0.15" group="5"/>
                     </body>
 
                 </body>
@@ -113,7 +113,7 @@
                         <joint axis="0 1 0" damping="0.1" name="bshin_joint" pos="0 0 0" range="-2.8 2.8" type="hinge"/>
                         <geom quat="0 0 0.7071068 0.7071068" name="bshin_geom" pos="0 0 0.175026" rgba="0.51 0.51 0.51 1" type="mesh" mesh="shin_mesh" friction="2.5 .1 .1"/>
                         <geom name="bfoot" class="foot"/>
-                        <site name="bfoot" pos="0 0 -0.15" group="5"/>
+                        <site name="bfoot" pos="0 -0.005 -0.15" group="5"/>
                     </body>
 
                 </body>
@@ -131,10 +131,19 @@
     </actuator>
 
     <sensor>
+        <gyro site="imu" name="gyro"/>
+        <velocimeter site="imu" name="local_linvel"/>
+        <accelerometer site="imu" name="accelerometer"/>
+        <framepos objtype="site" objname="imu" name="position"/>
+        <framezaxis objtype="site" objname="imu" name="upvector"/>
+        <framexaxis objtype="site" objname="imu" name="forwardvector"/>
+        <framelinvel objtype="site" objname="imu" name="global_linvel"/>
+        <frameangvel objtype="site" objname="imu" name="global_angvel"/>
+        <framequat objtype="site" objname="imu" name="orientation"/>
         <framelinvel objtype="site" objname="ffoot" name="ffoot_global_linvel"/>
-        <framepos objtype="site" objname="ffoot" name="ffoot_pos" reftype="site" refname="front_torso_center_site"/>  <!-- check if this refname works -->
+        <framepos objtype="site" objname="ffoot" name="ffoot_pos" reftype="geom" refname="front_torso_center_geom"/>  <!-- check if this refname works -->
         <framelinvel objtype="site" objname="bfoot" name="bfoot_global_linvel"/>
-        <framepos objtype="site" objname="bfoot" name="bfoot_pos" reftype="site" refname="front_torso_center_site"/>  <!-- check if this refname works -->
+        <framepos objtype="site" objname="bfoot" name="bfoot_pos" reftype="geom" refname="front_torso_center_geom"/>  <!-- check if this refname works -->
     </sensor>
 
   <keyframe>
