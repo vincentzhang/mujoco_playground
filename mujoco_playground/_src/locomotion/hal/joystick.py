@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
-"""Joystick task for Go1."""
+"""Joystick task for HAL."""
 
 from typing import Any, Dict, Optional, Union
 
@@ -32,7 +32,7 @@ from mujoco_playground._src.locomotion.hal import hal_constants as consts
 def default_config() -> config_dict.ConfigDict:
   return config_dict.create(
       ctrl_dt=0.02,
-      sim_dt=0.01,
+      sim_dt=0.004,
       episode_length=1000,
       Kp=35.0,
       Kd=0.5,
@@ -111,32 +111,34 @@ class Joystick(hal_base.HALEnv):
 
   def _post_init(self) -> None:
     self._init_q = jp.array(self._mj_model.keyframe("home").qpos)
-    self._default_pose = jp.array(self._mj_model.keyframe("home").ctrl)
+    self._default_pose = jp.array(self._mj_model.keyframe("home").qpos[7:])
 
-    self._lowers, self._uppers = self.mj_model.jnt_range.T
+    # Note: First joint is freejoint.
+    self._lowers, self._uppers = self.mj_model.jnt_range[1:].T
     self._soft_lowers = self._lowers * self._config.soft_joint_pos_limit_factor
     self._soft_uppers = self._uppers * self._config.soft_joint_pos_limit_factor
 
     self._torso_body_id = self._mj_model.body(consts.ROOT_BODY).id
     self._torso_mass = self._mj_model.body_subtreemass[self._torso_body_id]
 
-    # self._feet_site_id = np.array(
-    #     [self._mj_model.site(name).id for name in consts.FEET_SITES]
-    # )
+    self._feet_site_id = np.array(
+        [self._mj_model.site(name).id for name in consts.FEET_SITES]
+    )
     self._floor_geom_id = self._mj_model.geom("floor").id
-    # self._feet_geom_id = np.array(
-    #     [self._mj_model.geom(name).id for name in consts.FEET_GEOMS]
-    # )
+    self._feet_geom_id = np.array(
+        [self._mj_model.geom(name).id for name in consts.FEET_GEOMS]
+    )
+    self._num_feet = len(self._feet_site_id)
 
-    # foot_linvel_sensor_adr = []
-    # for site in consts.FEET_SITES:
-    #   sensor_id = self._mj_model.sensor(f"{site}_global_linvel").id
-    #   sensor_adr = self._mj_model.sensor_adr[sensor_id]
-    #   sensor_dim = self._mj_model.sensor_dim[sensor_id]
-    #   foot_linvel_sensor_adr.append(
-    #       list(range(sensor_adr, sensor_adr + sensor_dim))
-    #   )
-    # self._foot_linvel_sensor_adr = jp.array(foot_linvel_sensor_adr)
+    foot_linvel_sensor_adr = []
+    for site in consts.FEET_SITES:
+      sensor_id = self._mj_model.sensor(f"{site}_global_linvel").id
+      sensor_adr = self._mj_model.sensor_adr[sensor_id]
+      sensor_dim = self._mj_model.sensor_dim[sensor_id]
+      foot_linvel_sensor_adr.append(
+          list(range(sensor_adr, sensor_adr + sensor_dim))
+      )
+    self._foot_linvel_sensor_adr = jp.array(foot_linvel_sensor_adr)
 
     self._cmd_a = jp.array(self._config.command_config.a)
     self._cmd_b = jp.array(self._config.command_config.b)
@@ -161,7 +163,7 @@ class Joystick(hal_base.HALEnv):
         jax.random.uniform(key, (6,), minval=-0.5, maxval=0.5)
     )
 
-    data = mjx_env.init(self.mjx_model, qpos=qpos, qvel=qvel, ctrl=ctrl)
+    data = mjx_env.init(self.mjx_model, qpos=qpos, qvel=qvel, ctrl=qpos[7:])
 
     rng, key1, key2, key3 = jax.random.split(rng, 4)
     time_until_next_pert = jax.random.uniform(
@@ -201,9 +203,9 @@ class Joystick(hal_base.HALEnv):
         "steps_until_next_cmd": steps_until_next_cmd,
         "last_act": jp.zeros(self.mjx_model.nu),
         "last_last_act": jp.zeros(self.mjx_model.nu),
-        "feet_air_time": jp.zeros(4),
-        "last_contact": jp.zeros(4, dtype=bool),
-        "swing_peak": jp.zeros(4),
+        "feet_air_time": jp.zeros(self._num_feet),
+        "last_contact": jp.zeros(self._num_feet, dtype=bool),
+        "swing_peak": jp.zeros(self._num_feet),
         "steps_until_next_pert": steps_until_next_pert,
         "pert_duration_seconds": pert_duration_seconds,
         "pert_duration": pert_duration_steps,
@@ -343,9 +345,9 @@ class Joystick(hal_base.HALEnv):
         noisy_linvel,  # 3
         noisy_gyro,  # 3
         noisy_gravity,  # 3
-        noisy_joint_angles - self._default_pose,  # 12
-        noisy_joint_vel,  # 12
-        info["last_act"],  # 12
+        noisy_joint_angles - self._default_pose,  # 5
+        noisy_joint_vel,  # 5
+        info["last_act"],  # 5
         info["command"],  # 3
     ])
 
@@ -360,12 +362,12 @@ class Joystick(hal_base.HALEnv):
         gravity,  # 3
         linvel,  # 3
         angvel,  # 3
-        joint_angles - self._default_pose,  # 12
-        joint_vel,  # 12
-        data.actuator_force,  # 12
-        info["last_contact"],  # 4
-        feet_vel,  # 4*3
-        info["feet_air_time"],  # 4
+        joint_angles - self._default_pose,  # 5
+        joint_vel,  # 5
+        data.actuator_force,  # 5
+        info["last_contact"],  # 2
+        feet_vel,  # 2*3
+        info["feet_air_time"],  # 2
         data.xfrc_applied[self._torso_body_id, :3],  # 3
         info["steps_since_last_pert"] >= info["steps_until_next_pert"],  # 1
     ])
@@ -471,7 +473,7 @@ class Joystick(hal_base.HALEnv):
 
   def _reward_pose(self, qpos: jax.Array) -> jax.Array:
     # Stay close to the default pose.
-    weight = jp.array([1.0, 1.0, 0.1] * 4)
+    weight = jp.array([1.0, 1.0, 0.1, 1.0, 0.1])
     return jp.exp(-jp.sum(jp.square(qpos - self._default_pose) * weight))
 
   def _cost_stand_still(

@@ -56,8 +56,8 @@
     </option>
     
     <asset>
-        <mesh name="thigh_mesh" file="meshes/thigh.stl" scale="0.001 0.001 0.001"/>
-        <mesh name="shin_mesh" file="meshes/shin.stl" scale="0.001 0.001 0.001"/>
+        <mesh name="thigh_mesh" file="thigh.stl" scale="0.001 0.001 0.001"/>
+        <mesh name="shin_mesh" file="shin.stl" scale="0.001 0.001 0.001"/>
 
         <texture type="skybox" builtin="gradient" rgb1=".3 .5 .7" rgb2="0 0 0" width="32" height="512"/>
         

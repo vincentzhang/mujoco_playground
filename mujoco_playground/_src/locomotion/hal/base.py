@@ -27,10 +27,10 @@ from mujoco_playground._src import mjx_env
 from mujoco_playground._src.locomotion.hal import hal_constants as consts
 
 
-def get_assets() -> Dict[str, bytes]:
+def _get_assets() -> Dict[str, bytes]:
   assets = {}
   mjx_env.update_assets(assets, consts.ROOT_PATH / "xmls", "*.xml")
-  mjx_env.update_assets(assets, consts.ROOT_PATH / "xmls" / "assets")
+  mjx_env.update_assets(assets, consts.ROOT_PATH / "xmls" / "meshes")
   # path = mjx_env.MENAGERIE_PATH / "unitree_go1"
   # mjx_env.update_assets(assets, path, "*.xml")
   # mjx_env.update_assets(assets, path / "assets")
@@ -49,7 +49,7 @@ class HALEnv(mjx_env.MjxEnv):
     super().__init__(config, config_overrides)
 
     self._mj_model = mujoco.MjModel.from_xml_string(
-        epath.Path(xml_path).read_text(), assets=get_assets()
+        epath.Path(xml_path).read_text(), assets=_get_assets()
     )
     self._mj_model.opt.timestep = self._config.sim_dt
 
