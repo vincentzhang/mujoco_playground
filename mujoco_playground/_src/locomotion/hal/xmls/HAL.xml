@@ -34,14 +34,20 @@
 
     <default>
         <joint armature=".005" damping=".5"/>
-        <geom conaffinity="0" condim="3" contype="0" friction=".8 .02 .01"/>
+        <!-- set conaffinity to 1 to enable collision between body and floor; 
+             set both conaffinity and contype to 1 to enable full collision.
+        -->
+        <geom contype="0" conaffinity="0" condim="3" friction=".8 .02 .01"/>
         <default class="foot">
           <!--
           This specific line enables collisions for the feet only.
           The floor is contype=1, conaffinity=0 so this implies that the feet cannot
           collide with each other, but they can collide with the floor.
+
+          The size of the feet is 0.02. The feet are spheres.
+          solimp parameters are taken from go1. 
           -->
-          <geom type="sphere" size="0.023" pos="0 0 -0.213" solimp="0.9 .95 0.023" contype="0" conaffinity="1"/>
+          <geom type="sphere" size="0.021"  pos="0 -0.005 -0.15" solimp="0.9 .95 0.023" contype="0" conaffinity="1"/>
         </default>
     </default>
 
@@ -87,8 +93,8 @@
                     <body name="fshin" pos="0.01 -0.02 -0.175026">
                         <joint axis="0 1 0" damping="0.1" name="fshin_joint" pos="0 0 0" range="-2.8 2.8" type="hinge"/>
                         <geom quat="0 0 0.7071068 0.7071068" name="fshin_geom" pos="0 0 0.175026" rgba="0.51 0.51 0.51 1" type="mesh" mesh="shin_mesh" friction="2.5 .1 .1"/>
-                        <geom name="ffoot" class="foot"/>
-                        <site name="ffoot" pos="0.01 -0.02 -0.175026" type="sphere" size="0.023" group="5"/>
+                        <geom name="ffoot" class="foot" rgba="0.8 0.5 0.2 1"/>  <!-- set front foot to yellow to identify front vs back -->
+                        <site name="ffoot" pos="0 0 -0.15" group="5"/>
                     </body>
 
                 </body>
@@ -107,7 +113,7 @@
                         <joint axis="0 1 0" damping="0.1" name="bshin_joint" pos="0 0 0" range="-2.8 2.8" type="hinge"/>
                         <geom quat="0 0 0.7071068 0.7071068" name="bshin_geom" pos="0 0 0.175026" rgba="0.51 0.51 0.51 1" type="mesh" mesh="shin_mesh" friction="2.5 .1 .1"/>
                         <geom name="bfoot" class="foot"/>
-                        <site name="bfoot" pos="-0.01 -0.02 -0.175026" type="sphere" size="0.023" group="5"/>
+                        <site name="bfoot" pos="0 0 -0.15" group="5"/>
                     </body>
 
                 </body>
