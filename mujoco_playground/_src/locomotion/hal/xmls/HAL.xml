@@ -81,17 +81,17 @@
             <freejoint/>
             <site name="imu" pos="0 0 0" group="5"/>
             <body name="front_torso" pos="0 0 0">
-                <joint name="spine_joint" damping="0.1" type="hinge" axis="0 1 0" pos="0 0 0" range="-2 2"/>
+                <joint name="spine_joint" damping="0.1" type="hinge" axis="0 1 0" pos="0 0 0" range="-2 2" frictionloss="0.3"/>
                 <geom fromto="0 0 0 .195586 0 0" rgba="0.141 0.141 0.141 1" name="front_torso_geom" size="0.01" type="capsule"/>
                 <geom quat="0 0 0.7071068 0.7071068" rgba="0.141 0.141 0.141 1" type="cylinder" size="0.046 0.01" pos="0.119488 0.001 0" friction="1.0 .1 .1"/>
 
                 <body name="fthigh" pos=".195586 0 0">
-                    <joint axis="0 1 0" damping="0.1" name="fthigh_joint" pos="0 0 0" range="-3 3" type="hinge"/>
+                    <joint axis="0 1 0" damping="0.1" name="fthigh_joint" pos="0 0 0" range="-3 3" type="hinge" frictionloss="0.3"/>
                     <geom quat="0 0 0.7071068 0.7071068" rgba="0.329 0.329 0.329 1" name="fthigh_pully_geom" type="cylinder" size="0.0585 0.01" pos="0.01 0 0"/>
                     <geom quat="0 0 0.7071068 0.7071068" rgba="0.329 0.329 0.329 1" name="fthigh_geom" pos="0.01 -0.02 0" type="mesh" mesh="thigh_mesh" friction="1.0 .1 .1"/> 
                     
                     <body name="fshin" pos="0.01 -0.02 -0.175026">
-                        <joint axis="0 1 0" damping="0.1" name="fshin_joint" pos="0 0 0" range="-2.8 2.8" type="hinge"/>
+                        <joint axis="0 1 0" damping="0.1" name="fshin_joint" pos="0 0 0" range="-2.8 2.8" type="hinge" frictionloss="0.3"/>
                         <geom quat="0 0 0.7071068 0.7071068" name="fshin_geom" pos="0 0 0.175026" rgba="0.51 0.51 0.51 1" type="mesh" mesh="shin_mesh" friction="2.5 .1 .1"/>
                         <geom name="ffoot" class="foot" rgba="0.8 0.5 0.2 1"/>  <!-- set front foot to yellow to identify front vs back -->
                         <site name="ffoot" pos="0 -0.005 -0.15" group="5"/>
@@ -105,12 +105,12 @@
                 <geom quat="0 0 0.7071068 0.7071068" rgba="0.141 0.141 0.141 1" type="cylinder" size="0.046 0.01" pos="-0.119488 0.001 0"/>
 
                 <body name="bthigh" pos="-.195586 0 0">
-                    <joint axis="0 1 0" damping="0.1" name="bthigh_joint" pos="0 0 0" range="-3 3" type="hinge"/>
+                    <joint axis="0 1 0" damping="0.1" name="bthigh_joint" pos="0 0 0" range="-3 3" type="hinge" frictionloss="0.3"/>
                     <geom quat="0 0 0.7071068 0.7071068" rgba="0.329 0.329 0.329 1" name="bthigh_pully_geom" type="cylinder" size="0.0585 0.01" pos="-0.01 0 0" />
                     <geom quat="0 0 0.7071068 0.7071068" rgba="0.329 0.329 0.329 1" name="bthigh_geom" pos="-0.01 -0.02 0" type="mesh" mesh="thigh_mesh" friction="1.0 .1 .1"/> 
 
                     <body name="bshin" pos="-0.01 -0.02 -0.175026">
-                        <joint axis="0 1 0" damping="0.1" name="bshin_joint" pos="0 0 0" range="-2.8 2.8" type="hinge"/>
+                        <joint axis="0 1 0" damping="0.1" name="bshin_joint" pos="0 0 0" range="-2.8 2.8" type="hinge" frictionloss="0.3"/>
                         <geom quat="0 0 0.7071068 0.7071068" name="bshin_geom" pos="0 0 0.175026" rgba="0.51 0.51 0.51 1" type="mesh" mesh="shin_mesh" friction="2.5 .1 .1"/>
                         <geom name="bfoot" class="foot"/>
                         <site name="bfoot" pos="0 -0.005 -0.15" group="5"/>

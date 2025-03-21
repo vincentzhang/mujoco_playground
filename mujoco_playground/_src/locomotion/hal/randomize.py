@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
-"""Domain randomization for the Go1 environment."""
+"""Domain randomization for the HAL environment."""
 
 import jax
 from mujoco import mjx
@@ -33,14 +33,14 @@ def domain_randomize(model: mjx.Model, rng: jax.Array):
     # Scale static friction: *U(0.9, 1.1).
     rng, key = jax.random.split(rng)
     frictionloss = model.dof_frictionloss[6:] * jax.random.uniform(
-        key, shape=(12,), minval=0.9, maxval=1.1
+        key, shape=(5,), minval=0.9, maxval=1.1
     )
     dof_frictionloss = model.dof_frictionloss.at[6:].set(frictionloss)
 
     # Scale armature: *U(1.0, 1.05).
     rng, key = jax.random.split(rng)
     armature = model.dof_armature[6:] * jax.random.uniform(
-        key, shape=(12,), minval=1.0, maxval=1.05
+        key, shape=(5,), minval=1.0, maxval=1.05
     )
     dof_armature = model.dof_armature.at[6:].set(armature)
 
@@ -70,7 +70,7 @@ def domain_randomize(model: mjx.Model, rng: jax.Array):
     qpos0 = model.qpos0
     qpos0 = qpos0.at[7:].set(
         qpos0[7:]
-        + jax.random.uniform(key, shape=(12,), minval=-0.05, maxval=0.05)
+        + jax.random.uniform(key, shape=(5,), minval=-0.05, maxval=0.05)
     )
 
     return (
