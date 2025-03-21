@@ -56,8 +56,8 @@
     </option>
     
     <asset>
-        <mesh name="thigh_mesh" file="thigh.stl" scale="0.001 0.001 0.001"/>
-        <mesh name="shin_mesh" file="shin.stl" scale="0.001 0.001 0.001"/>
+        <mesh name="thigh_mesh" file="meshes/thigh.stl" scale="0.001 0.001 0.001"/>
+        <mesh name="shin_mesh" file="meshes/shin.stl" scale="0.001 0.001 0.001"/>
 
         <texture type="skybox" builtin="gradient" rgb1=".3 .5 .7" rgb2="0 0 0" width="32" height="512"/>
         
@@ -77,17 +77,18 @@
 
         <body name="torso" pos="0 0 .38">
             <camera name="track" mode="trackcom" pos="0 -2 0.1" xyaxes="1 0 0 0 0 1"/>
-            <geom quat="0 0 0.7071068 0.7071068" type="cylinder" name="front_torso_center_geom" size="0.05 0.025" pos="0 0 0"  rgba="0.8 0.5 0.2 1"/>
+            <geom quat="0 0 0.7071068 0.7071068" type="cylinder" name="front_torso_center_geom" mass="0.6" size="0.05 0.025" pos="0 0 0"  rgba="0.8 0.5 0.2 1"/>
+            
             <freejoint/>
             <site name="imu" pos="0 0 0" group="5"/>
             <body name="front_torso" pos="0 0 0">
                 <joint name="spine_joint" damping="0.1" type="hinge" axis="0 1 0" pos="0 0 0" range="-2 2" frictionloss="0.3"/>
                 <geom fromto="0 0 0 .195586 0 0" rgba="0.141 0.141 0.141 1" name="front_torso_geom" size="0.01" type="capsule"/>
-                <geom quat="0 0 0.7071068 0.7071068" rgba="0.141 0.141 0.141 1" type="cylinder" size="0.046 0.01" pos="0.119488 0.001 0" friction="1.0 .1 .1"/>
+                <geom quat="0 0 0.7071068 0.7071068" rgba="0.141 0.141 0.141 1" type="cylinder" mass="0.5" size="0.046 0.01" pos="0.119488 0.001 0" friction="1.0 .1 .1"/>
 
                 <body name="fthigh" pos=".195586 0 0">
                     <joint axis="0 1 0" damping="0.1" name="fthigh_joint" pos="0 0 0" range="-3 3" type="hinge" frictionloss="0.3"/>
-                    <geom quat="0 0 0.7071068 0.7071068" rgba="0.329 0.329 0.329 1" name="fthigh_pully_geom" type="cylinder" size="0.0585 0.01" pos="0.01 0 0"/>
+                    <geom quat="0 0 0.7071068 0.7071068" rgba="0.329 0.329 0.329 1" name="fthigh_pully_geom" type="cylinder" mass="0.15" size="0.0585 0.01" pos="0.01 0 0"/>
                     <geom quat="0 0 0.7071068 0.7071068" rgba="0.329 0.329 0.329 1" name="fthigh_geom" pos="0.01 -0.02 0" type="mesh" mesh="thigh_mesh" friction="1.0 .1 .1"/> 
                     
                     <body name="fshin" pos="0.01 -0.02 -0.175026">
@@ -102,11 +103,11 @@
 
             <body name="back_torso" pos="0 0 0">
                 <geom fromto="-.195586 0 0 0 0 0" rgba="0.141 0.141 0.141 1" name="back_torso_geom" size="0.01" type="capsule"/>
-                <geom quat="0 0 0.7071068 0.7071068" rgba="0.141 0.141 0.141 1" type="cylinder" size="0.046 0.01" pos="-0.119488 0.001 0"/>
+                <geom quat="0 0 0.7071068 0.7071068" rgba="0.141 0.141 0.141 1" type="cylinder" mass="0.5" size="0.046 0.01" pos="-0.119488 0.001 0"/>
 
                 <body name="bthigh" pos="-.195586 0 0">
                     <joint axis="0 1 0" damping="0.1" name="bthigh_joint" pos="0 0 0" range="-3 3" type="hinge" frictionloss="0.3"/>
-                    <geom quat="0 0 0.7071068 0.7071068" rgba="0.329 0.329 0.329 1" name="bthigh_pully_geom" type="cylinder" size="0.0585 0.01" pos="-0.01 0 0" />
+                    <geom quat="0 0 0.7071068 0.7071068" rgba="0.329 0.329 0.329 1" name="bthigh_pully_geom" type="cylinder" mass="0.15" size="0.0585 0.01" pos="-0.01 0 0" />
                     <geom quat="0 0 0.7071068 0.7071068" rgba="0.329 0.329 0.329 1" name="bthigh_geom" pos="-0.01 -0.02 0" type="mesh" mesh="thigh_mesh" friction="1.0 .1 .1"/> 
 
                     <body name="bshin" pos="-0.01 -0.02 -0.175026">
