@@ -32,17 +32,17 @@ def domain_randomize(model: mjx.Model, rng: jax.Array):
 
     # Scale static friction: *U(0.9, 1.1).
     rng, key = jax.random.split(rng)
-    frictionloss = model.dof_frictionloss[6:] * jax.random.uniform(
+    frictionloss = model.dof_frictionloss[3:] * jax.random.uniform(
         key, shape=(5,), minval=0.9, maxval=1.1
     )
-    dof_frictionloss = model.dof_frictionloss.at[6:].set(frictionloss)
+    dof_frictionloss = model.dof_frictionloss.at[3:].set(frictionloss)
 
     # Scale armature: *U(1.0, 1.05).
     rng, key = jax.random.split(rng)
-    armature = model.dof_armature[6:] * jax.random.uniform(
+    armature = model.dof_armature[3:] * jax.random.uniform(
         key, shape=(5,), minval=1.0, maxval=1.05
     )
-    dof_armature = model.dof_armature.at[6:].set(armature)
+    dof_armature = model.dof_armature.at[3:].set(armature)
 
     # Jitter center of mass positiion: +U(-0.05, 0.05).
     rng, key = jax.random.split(rng)
@@ -68,8 +68,8 @@ def domain_randomize(model: mjx.Model, rng: jax.Array):
     # Jitter qpos0: +U(-0.05, 0.05).
     rng, key = jax.random.split(rng)
     qpos0 = model.qpos0
-    qpos0 = qpos0.at[7:].set(
-        qpos0[7:]
+    qpos0 = qpos0.at[3:].set(
+        qpos0[3:]
         + jax.random.uniform(key, shape=(5,), minval=-0.05, maxval=0.05)
     )
 

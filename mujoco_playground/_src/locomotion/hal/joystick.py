@@ -111,10 +111,10 @@ class Joystick(hal_base.HALEnv):
 
   def _post_init(self) -> None:
     self._init_q = jp.array(self._mj_model.keyframe("home").qpos)
-    self._default_pose = jp.array(self._mj_model.keyframe("home").qpos[7:])
+    self._default_pose = jp.array(self._mj_model.keyframe("home").qpos[3:])
 
     # Note: First joint is freejoint.
-    self._lowers, self._uppers = self.mj_model.jnt_range[1:].T
+    self._lowers, self._uppers = self.mj_model.jnt_range[3:].T
     self._soft_lowers = self._lowers * self._config.soft_joint_pos_limit_factor
     self._soft_uppers = self._uppers * self._config.soft_joint_pos_limit_factor
 
@@ -153,17 +153,18 @@ class Joystick(hal_base.HALEnv):
     qpos = qpos.at[0:2].set(qpos[0:2] + dxy)
     rng, key = jax.random.split(rng)
     yaw = jax.random.uniform(key, (1,), minval=-3.14, maxval=3.14)
-    quat = math.axis_angle_to_quat(jp.array([0, 0, 1]), yaw)
-    new_quat = math.quat_mul(qpos[3:7], quat)
-    qpos = qpos.at[3:7].set(new_quat)
+    qpos = qpos.at[2:3].set(qpos[2:3] + yaw)
+    # quat = math.axis_angle_to_quat(jp.array([0, 0, 1]), yaw)
+    # new_quat = math.quat_mul(qpos[3:7], quat)
+    # qpos = qpos.at[3:7].set(new_quat)
 
     # d(xyzrpy)=U(-0.5, 0.5)
-    rng, key = jax.random.split(rng)
-    qvel = qvel.at[0:6].set(
-        jax.random.uniform(key, (6,), minval=-0.5, maxval=0.5)
-    )
+    # rng, key = jax.random.split(rng)
+    # qvel = qvel.at[0:6].set(
+    #     jax.random.uniform(key, (6,), minval=-0.5, maxval=0.5)
+    # )
 
-    data = mjx_env.init(self.mjx_model, qpos=qpos, qvel=qvel, ctrl=qpos[7:])
+    data = mjx_env.init(self.mjx_model, qpos=qpos, qvel=qvel, ctrl=qpos[3:])
 
     rng, key1, key2, key3 = jax.random.split(rng, 4)
     time_until_next_pert = jax.random.uniform(
@@ -314,7 +315,7 @@ class Joystick(hal_base.HALEnv):
         * self._config.noise_config.scales.gravity
     )
 
-    joint_angles = data.qpos[7:]
+    joint_angles = data.qpos[3:]
     info["rng"], noise_rng = jax.random.split(info["rng"])
     noisy_joint_angles = (
         joint_angles
@@ -323,7 +324,7 @@ class Joystick(hal_base.HALEnv):
         * self._config.noise_config.scales.joint_pos
     )
 
-    joint_vel = data.qvel[6:]
+    joint_vel = data.qvel[3:]
     info["rng"], noise_rng = jax.random.split(info["rng"])
     noisy_joint_vel = (
         joint_vel
@@ -358,6 +359,7 @@ class Joystick(hal_base.HALEnv):
     privileged_state = jp.hstack([
         state,
         gyro,  # 3
+
         accelerometer,  # 3
         gravity,  # 3
         linvel,  # 3
@@ -398,14 +400,14 @@ class Joystick(hal_base.HALEnv):
         "lin_vel_z": self._cost_lin_vel_z(self.get_global_linvel(data)),
         "ang_vel_xy": self._cost_ang_vel_xy(self.get_global_angvel(data)),
         "orientation": self._cost_orientation(self.get_upvector(data)),
-        "stand_still": self._cost_stand_still(info["command"], data.qpos[7:]),
+        "stand_still": self._cost_stand_still(info["command"], data.qpos[3:]),
         "termination": self._cost_termination(done),
-        "pose": self._reward_pose(data.qpos[7:]),
+        "pose": self._reward_pose(data.qpos[3:]),
         "torques": self._cost_torques(data.actuator_force),
         "action_rate": self._cost_action_rate(
             action, info["last_act"], info["last_last_act"]
         ),
-        "energy": self._cost_energy(data.qvel[6:], data.actuator_force),
+        "energy": self._cost_energy(data.qvel[3:], data.actuator_force),
         "feet_slip": self._cost_feet_slip(data, contact, info),
         "feet_clearance": self._cost_feet_clearance(data),
         "feet_height": self._cost_feet_height(
@@ -414,7 +416,7 @@ class Joystick(hal_base.HALEnv):
         "feet_air_time": self._reward_feet_air_time(
             info["feet_air_time"], first_contact, info["command"]
         ),
-        "dof_pos_limits": self._cost_joint_pos_limits(data.qpos[7:]),
+        "dof_pos_limits": self._cost_joint_pos_limits(data.qpos[3:]),
     }
 
   # Tracking rewards.

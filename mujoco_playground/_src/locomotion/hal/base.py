@@ -54,7 +54,7 @@ class HALEnv(mjx_env.MjxEnv):
     self._mj_model.opt.timestep = self._config.sim_dt
 
     # Modify PD gains.
-    self._mj_model.dof_damping[6:] = config.Kd
+    self._mj_model.dof_damping[3:] = config.Kd
     self._mj_model.actuator_gainprm[:, 0] = config.Kp
     self._mj_model.actuator_biasprm[:, 1] = -config.Kp
 
