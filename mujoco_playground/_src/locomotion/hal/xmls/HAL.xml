@@ -34,6 +34,7 @@
 
     <default>
         <joint armature=".005" damping=".5"/>
+        <position forcerange="-23.7 23.7" inheritrange="1" kp="35"/>
         <!-- set conaffinity to 1 to enable collision between body and floor; 
              set both conaffinity and contype to 1 to enable full collision.
         -->
@@ -75,7 +76,7 @@
         <light name="spotlight" mode="targetbodycom" target="torso" diffuse=".8 .8 .8" specular="0.3 0.3 0.3" pos="0 -6 4" cutoff="30"/>
         <geom name="floor" conaffinity="0" contype="1" condim="3" material="grid" pos="0 0 0" size="10 10 10" type="plane"/>
 
-        <body name="torso" pos="0 0 .38">
+        <body name="torso" pos="0 0 .345">
             <camera name="track" mode="trackcom" pos="0 -2 0.1" xyaxes="1 0 0 0 0 1"/>
             <joint armature="0" axis="1 0 0" damping="0" limited="false" name="rootx" pos="0 0 0" stiffness="0" type="slide"/>
             <joint armature="0" axis="0 0 1" damping="0" limited="false" name="rootz" pos="0 0 0" stiffness="0" type="slide"/>
@@ -86,12 +87,12 @@
             <!-- <freejoint/> -->
             <site name="imu" pos="0 0 0" group="5"/>
             <body name="front_torso" pos="0 0 0">
-                <joint name="spine_joint" damping="0.1" type="hinge" axis="0 1 0" pos="0 0 0" range="-2 2" frictionloss="0.3"/>
+                <joint name="spine_joint" damping="0.1" type="hinge" axis="0 1 0" pos="0 0 0" range="-1.5 1.5" frictionloss="0.3"/>
                 <geom fromto="0 0 0 .195586 0 0" rgba="0.141 0.141 0.141 1" name="front_torso_geom" size="0.01" type="capsule"/>
                 <geom quat="0 0 0.7071068 0.7071068" rgba="0.141 0.141 0.141 1" type="cylinder" mass="0.5" size="0.046 0.01" pos="0.119488 0.001 0" friction="1.0 .1 .1"/>
 
                 <body name="fthigh" pos=".195586 0 0">
-                    <joint axis="0 1 0" damping="0.1" name="fthigh_joint" pos="0 0 0" range="-3 3" type="hinge" frictionloss="0.3"/>
+                    <joint axis="0 1 0" damping="0.1" name="fthigh_joint" pos="0 0 0" range="-1.57 1.57" type="hinge" frictionloss="0.3"/>
                     <geom quat="0 0 0.7071068 0.7071068" rgba="0.329 0.329 0.329 1" name="fthigh_pully_geom" type="cylinder" mass="0.15" size="0.0585 0.01" pos="0.01 0 0"/>
                     <geom quat="0 0 0.7071068 0.7071068" rgba="0.329 0.329 0.329 1" name="fthigh_geom" pos="0.01 -0.02 0" type="mesh" mesh="thigh_mesh" friction="1.0 .1 .1"/> 
                     
@@ -110,7 +111,7 @@
                 <geom quat="0 0 0.7071068 0.7071068" rgba="0.141 0.141 0.141 1" type="cylinder" mass="0.5" size="0.046 0.01" pos="-0.119488 0.001 0"/>
 
                 <body name="bthigh" pos="-.195586 0 0">
-                    <joint axis="0 1 0" damping="0.1" name="bthigh_joint" pos="0 0 0" range="-3 3" type="hinge" frictionloss="0.3"/>
+                    <joint axis="0 1 0" damping="0.1" name="bthigh_joint" pos="0 0 0" range="-1.57 1.57" type="hinge" frictionloss="0.3"/>
                     <geom quat="0 0 0.7071068 0.7071068" rgba="0.329 0.329 0.329 1" name="bthigh_pully_geom" type="cylinder" mass="0.15" size="0.0585 0.01" pos="-0.01 0 0" />
                     <geom quat="0 0 0.7071068 0.7071068" rgba="0.329 0.329 0.329 1" name="bthigh_geom" pos="-0.01 -0.02 0" type="mesh" mesh="thigh_mesh" friction="1.0 .1 .1"/> 
 
@@ -129,10 +130,10 @@
 
     <actuator>
         <position joint="spine_joint" name="spine"/>
-        <position joint="bthigh_joint" name="bthigh"/>
-        <position joint="bshin_joint" name="bshin"/>
         <position joint="fthigh_joint" name="fthigh"/>
         <position joint="fshin_joint" name="fshin"/>
+        <position joint="bthigh_joint" name="bthigh"/>
+        <position joint="bshin_joint" name="bshin"/>
     </actuator>
 
     <sensor>
@@ -152,7 +153,7 @@
     </sensor>
 
   <keyframe>
-    <key name="home" qpos="0 0 0 0 0.51 -1.37 0.51 -1.37" ctrl="0 0 0 0 0"/>  <!-- resets the model to the home position -->
+    <key name="home" qpos="0 0 0 0 0.51 -1.05 0.51 -1.05" ctrl="0 0.51 -1.05 0.51 -1.05"/>  <!-- resets the model to the home position -->
     <!-- <key name="home" qpos="0 0 0.38 1 0 0 0 0 0.51 -1.37 0.51 -1.37" ctrl="0 0 0 0 0"/>  resets the model to the home position -->
   </keyframe>
 

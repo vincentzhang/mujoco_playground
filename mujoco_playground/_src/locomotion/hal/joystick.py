@@ -149,10 +149,15 @@ class Joystick(hal_base.HALEnv):
 
     # x=+U(-0.5, 0.5), y=+U(-0.5, 0.5), yaw=U(-3.14, 3.14).
     rng, key = jax.random.split(rng)
-    dxy = jax.random.uniform(key, (2,), minval=-0.5, maxval=0.5)
-    qpos = qpos.at[0:2].set(qpos[0:2] + dxy)
+    # dxy = jax.random.uniform(key, (2,), minval=-0.5, maxval=0.5)
+    # qpos = qpos.at[0:2].set(qpos[0:2] + dxy)
+    dx = jax.random.uniform(key, (1,), minval=-0.5, maxval=0.5)
+    qpos = qpos.at[0:1].set(qpos[0:1] + dx)
     rng, key = jax.random.split(rng)
-    yaw = jax.random.uniform(key, (1,), minval=-3.14, maxval=3.14)
+    dz = jax.random.uniform(key, (1,), minval=0, maxval=0.5)
+    qpos = qpos.at[1:2].set(qpos[1:2] + dz)
+    rng, key = jax.random.split(rng)
+    yaw = jax.random.uniform(key, (1,), minval=-0.5, maxval=0.5)
     qpos = qpos.at[2:3].set(qpos[2:3] + yaw)
     # quat = math.axis_angle_to_quat(jp.array([0, 0, 1]), yaw)
     # new_quat = math.quat_mul(qpos[3:7], quat)
